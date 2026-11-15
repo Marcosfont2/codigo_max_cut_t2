@@ -23,9 +23,8 @@ using namespace std;
 using ll = long long;
 using Clock = chrono::steady_clock;
 
-// ============================================================================================
 //  Grafo e utilitarios
-// ============================================================================================
+
 struct Grafo {
     int n = 0;
     ll m = 0;          // numero de arestas (apos fundir arestas paralelas)
@@ -82,10 +81,10 @@ ll valorCorte(const Grafo &g, const vector<int> &lado) {
     return corte;
 }
 
-// ============================================================================================
+
 //  Heuristica do Trabalho 1 (gulosa por grau + busca local 1-flip), usada como limite inferior
 //  inicial do Branch-and-Bound e como referencia de comparacao.
-// ============================================================================================
+
 vector<int> ordemPorGrau(const Grafo &g) {
     vector<int> ordem(g.n);
     iota(ordem.begin(), ordem.end(), 0);
@@ -136,9 +135,8 @@ vector<int> heuristicaT1(const Grafo &g) {
     return lado;
 }
 
-// ============================================================================================
 //  Algoritmo 1: Branch-and-Bound
-// ============================================================================================
+
 struct ResultadoBB {
     ll valor = 0;
     vector<int> lado;
@@ -266,12 +264,11 @@ ResultadoBB branchAndBound(const Grafo &g, const vector<int> &ladoInicial, doubl
     return r;
 }
 
-// ============================================================================================
 //  Algoritmo 2: Programacao dinamica sobre a fronteira (largura de caminho)
-// ============================================================================================
+
 // Ordem de processamento escolhida de forma gulosa para minimizar a fronteira F (vertices ja processados
 // que ainda tem vizinho nao processado). A tabela da DP tem 2^K entradas, K = |F| + 1 no pior passo.
-// Devolve K maximo (ou INT_MAX se passar de 'corte').
+
 static int ordemFronteiraGulosa(const Grafo &g, int inicio, mt19937 &rng, int corte, vector<int> &ordem) {
     int n = g.n;
     vector<int> cnt(n);  // vizinhos ainda nao processados
@@ -492,9 +489,8 @@ ResultadoDP dpLargura(const Grafo &g, const vector<int> &ordem, int larguraMax, 
     return r;
 }
 
-// ============================================================================================
 //  Interface
-// ============================================================================================
+
 #ifndef SEM_MAIN
 namespace fs = std::filesystem;
 

@@ -1,6 +1,6 @@
 // Validacao dos algoritmos exatos contra forca bruta em milhares de grafos pequenos aleatorios.
 // (A forca bruta so e usada aqui, como oraculo de teste; nao faz parte da entrega algoritmica.)
-// Compilar: g++ -std=c++17 -O2 -o validacao validacao.cpp      Uso: ./validacao [numero_de_casos] [semente]
+
 #define SEM_MAIN
 #include "exato.cpp"
 

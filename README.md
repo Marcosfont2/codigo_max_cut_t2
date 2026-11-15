@@ -56,4 +56,4 @@ cd relatorio && pdflatex relatorio.tex && pdflatex relatorio.tex
 bash -c 'g++ -std=c++17 -O2 -o validacao validacao.cpp && ./validacao 3000 7'   # validação
 ```
 
-Os tempos do relatório foram medidos em um Xeon 2,1 GHz de um núcleo; em outra máquina, os tempos mudam, mas os valores ótimos não.
+Os tempos do relatório foram medidos em uma máquina equipada com processador Intel Core i5-9300H @ 2,40 GHz e 8 GB de RAM (em execução single-thread)

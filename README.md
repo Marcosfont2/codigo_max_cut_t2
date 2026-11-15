@@ -45,15 +45,4 @@ Opções:
 
 A saída mostra o valor de cada algoritmo, se a otimalidade foi provada, o valor ótimo, a razão heurística/ótimo, a conferência do valor recalculado a partir da partição, e a partição (um caractere 0/1 por vértice, 1..n). O arquivo de saída traz a partição no formato `vértice lado`.
 
-## Reproduzir os experimentos do relatório
-
-```
-bash scripts/gerar_instancias.sh
-rm -f resultados_t2/resultados.csv resultados_t2/largura_T1.txt
-bash scripts/rodar_experimentos.sh 30    # limite de 30 s para o B&B; retomável se interrompido
-python3 scripts/gerar_tabelas.py && python3 scripts/gerar_figuras.py    # exige Python 3 e matplotlib
-cd relatorio && pdflatex relatorio.tex && pdflatex relatorio.tex
-bash -c 'g++ -std=c++17 -O2 -o validacao validacao.cpp && ./validacao 3000 7'   # validação
-```
-
 Os tempos do relatório foram medidos em uma máquina equipada com processador Intel Core i5-9300H @ 2,40 GHz e 8 GB de RAM (em execução single-thread)

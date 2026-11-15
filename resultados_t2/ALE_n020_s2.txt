@@ -1,0 +1,32 @@
+Instancia: instancias_t2/ALE_n020_s2
+n=20 m=40 peso_total=40
+
+[Heuristica T1] guloso+busca local: 32 (0.0000 s)
+[Branch-and-Bound] valor=32 (OTIMO provado) nos=218 tempo=0.0000 s
+[DP largura] largura=7 valor=32 (OTIMO) tempo=0.0000 s (ordem: 0.0001 s) memoria~0 MB
+
+Valor otimo: 32 (provado por Branch-and-Bound e DP largura)
+Heuristica T1 / otimo: 1.0000
+Conferencia: valor recalculado da particao final = 32 (OK)
+
+Particao (vertice: lado):
+1 1
+2 1
+3 0
+4 0
+5 1
+6 1
+7 1
+8 1
+9 0
+10 1
+11 1
+12 0
+13 0
+14 0
+15 1
+16 0
+17 0
+18 1
+19 0
+20 1

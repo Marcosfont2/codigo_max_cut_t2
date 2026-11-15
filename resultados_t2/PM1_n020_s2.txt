@@ -1,0 +1,32 @@
+Instancia: instancias_t2/PM1_n020_s2
+n=20 m=40 peso_total=-4
+
+[Heuristica T1] guloso+busca local: 10 (0.0000 s)
+[Branch-and-Bound] valor=11 (OTIMO provado) nos=156 tempo=0.0000 s
+[DP largura] largura=7 valor=11 (OTIMO) tempo=0.0000 s (ordem: 0.0001 s) memoria~0 MB
+
+Valor otimo: 11 (provado por Branch-and-Bound e DP largura)
+Heuristica T1 / otimo: 0.9091
+Conferencia: valor recalculado da particao final = 11 (OK)
+
+Particao (vertice: lado):
+1 1
+2 0
+3 0
+4 1
+5 1
+6 0
+7 1
+8 0
+9 1
+10 1
+11 0
+12 0
+13 0
+14 0
+15 0
+16 0
+17 1
+18 0
+19 1
+20 1

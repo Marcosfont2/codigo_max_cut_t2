@@ -1,0 +1,24 @@
+\input{preambulo}
+\begin{document}
+\begin{center}
+{\Large\bfseries Corte Máximo: Algoritmos Exatos por Branch-and-Bound\\ e Programação Dinâmica sobre a Largura de Caminho}\\[10pt]
+{\bfseries Eduardo Marinho$^1$, Marcos Fontes$^1$}\\[6pt]
+$^1$Centro de Ciências Exatas e da Terra\\
+Departamento de Informática e Matemática Aplicada (DIMAp)\\
+Universidade Federal do Rio Grande do Norte (UFRN) -- Natal, RN -- Brasil\\
+DIM0605 -- Projeto e Análise de Algoritmos -- Prof.\ Sílvia Maia\\
+Novembro de 2026
+\end{center}
+\vspace{6pt}
+\begin{resumobloco}{Abstract}
+This paper presents two exact algorithms for the Maximum Cut problem: a Branch-and-Bound with an incrementally maintained upper bound, initialized with the greedy local-search heuristic of our previous work, and a dynamic program over the frontier of a vertex ordering, whose cost is exponential only in the pathwidth of the ordering. Both are proved correct and were validated against brute force on 3,000 small random graphs. On 79 instances, the dynamic program solved every sparse random graph up to 120 vertices and toroidal grids with $\pm1$ weights of up to 2,000 vertices in about 12 s or less, while Branch-and-Bound solved random graphs up to about 80 vertices and could not prove optimality on any grid. With the optima at hand, the previous heuristic reaches 77--80\% of the optimum on the 2,000-vertex toroidal grids and 91--98\% on sparse random graphs with positive weights.
+\end{resumobloco}
+\vspace{8pt}
+\begin{resumobloco}{Resumo}
+Este trabalho apresenta dois algoritmos exatos para o problema do Corte Máximo: um Branch-and-Bound com limitante superior mantido de forma incremental e inicializado com a heurística gulosa com busca local do trabalho anterior, e uma programação dinâmica sobre a fronteira de uma ordem dos vértices, cujo custo é exponencial apenas na largura de caminho da ordem. Ambos têm prova de correção e foram validados contra força bruta em 3\,000 grafos aleatórios pequenos. Em 79 instâncias, a programação dinâmica resolveu todos os grafos aleatórios esparsos até 120 vértices e grades toroidais com pesos $\pm1$ de até 2\,000 vértices em até cerca de 12\,s, enquanto o Branch-and-Bound resolveu grafos aleatórios até cerca de 80 vértices e não provou a otimalidade de nenhuma grade. Com os ótimos em mãos, a heurística do trabalho anterior obtém de 77 a 80\% do ótimo nas grades toroidais de 2\,000 vértices e de 91 a 98\% em grafos aleatórios esparsos com pesos positivos.
+\end{resumobloco}
+\input{secoes_1_a_6}
+\input{secao_7_8}
+\renewcommand{\refname}{Referências}
+\input{referencias}
+\end{document}

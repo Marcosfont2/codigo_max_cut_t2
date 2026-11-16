@@ -183,18 +183,9 @@ Os grafos \texttt{ALE} e \texttt{PM1} têm o mesmo tipo de estrutura (esparsos e
 
 \subsection{Plataforma e protocolo}
 
-Os experimentos rodaram em em uma máquina equipada com processador Intel Core i5-9300H @ 2,40 GHz e 8 GB de RAM (em execução single-thread), Windows 11, compilador \texttt{g++} 15.1 com \texttt{-std=c++17 -O2}. Os algoritmos são sequenciais. Os tempos medem apenas o algoritmo (relógio de parede, \texttt{steady\_clock}), sem a leitura do arquivo; o tempo da busca da ordem é medido à parte e é desprezível. O Branch-and-Bound tem limite de 30\,s por instância; se estourar, o valor devolvido é o melhor encontrado e a otimalidade não é provada, e isso aparece nas tabelas. A programação dinâmica foi executada com $w\le26$ e 2\,GB de memória. Como o Trabalho~1 foi medido em um chip M1, os tempos da heurística do Trabalho~1 aqui não são comparáveis aos da Tabela~1 daquele relatório; só os valores dos cortes o são. Mesmo os valores podem diferir um pouco: a heurística do Trabalho~1 está incorporada ao programa novo, mas a leitura agora ordena as listas de adjacência (para fundir arestas paralelas), o que muda o desempate da ordenação por grau. É o mesmo algoritmo, porém não idêntico bit a bit; no G32, por exemplo, ele dá 1\,170 aqui contra 1\,154 no relatório anterior.
+Os experimentos rodaram em em uma máquina equipada com processador Intel Core i5-9300H, 2,40 GHz e 8 GB de RAM (em execução single-thread), Windows 11, compilador \texttt{g++} 15.1 com \texttt{-std=c++17 -O2}. Os algoritmos são sequenciais. Os tempos medem apenas o algoritmo (relógio de parede, \texttt{steady\_clock}), sem a leitura do arquivo; o tempo da busca da ordem é medido à parte e é desprezível. O Branch-and-Bound tem limite de 30\,s por instância; se estourar, o valor devolvido é o melhor encontrado e a otimalidade não é provada, e isso aparece nas tabelas. A programação dinâmica foi executada com $w\le26$ e 2\,GB de memória. Como o Trabalho~1 foi medido em um chip M1, os tempos da heurística do Trabalho~1 aqui não são comparáveis aos da Tabela~1 daquele relatório; só os valores dos cortes o são. Mesmo os valores podem diferir um pouco: a heurística do Trabalho~1 está incorporada ao programa novo, mas a leitura agora ordena as listas de adjacência (para fundir arestas paralelas), o que muda o desempate da ordenação por grau. É o mesmo algoritmo, porém não idêntico bit a bit; no G32, por exemplo, ele dá 1\,170 aqui contra 1\,154 no relatório anterior.
 
 \subsection{Validação}
 
 Escrevemos um programa de validação (\texttt{validacao.cpp}) que gera 3\,000 grafos aleatórios com 1 a 16 vértices, densidades de 0 a 1 e quatro regimes de pesos (todos $+1$; $\pm1$; inteiros em $[-4,6]$, incluindo pesos nulos; inteiros positivos em $[1,9]$), e compara, em cada um, o valor ótimo obtido por força bruta com o dos dois algoritmos. Também recalcula o corte das partições devolvidas. A força bruta é usada apenas como oráculo de teste. Resultado: 3\,000 casos, 0 falhas. Além disso, em todas as instâncias da Seção~7 em que os dois algoritmos terminaram, os valores coincidiram, e a partição final é sempre reavaliada pelo programa (linha \emph{Conferência} do relatório da execução).
 
-\subsection{Reprodução}
-
-O pacote entregue contém o código, as instâncias e os resultados. A partir da raiz:
-\begin{verbatim}
-bash scripts/gerar_instancias.sh        # cria instancias_t2/ (79 arquivos)
-bash scripts/rodar_experimentos.sh 30   # roda tudo, grava resultados_t2/
-python3 scripts/gerar_tabelas.py        # gera relatorio/tabelas.tex
-./exato instancias_t2/TORO_8x250        # uma instancia (ou ./exato para o menu)
-\end{verbatim}

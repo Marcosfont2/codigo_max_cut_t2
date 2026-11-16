@@ -2,8 +2,8 @@ Instancia: instancias_t2/PM1_n050_s1
 n=50 m=100 peso_total=12
 
 [Heuristica T1] guloso+busca local: 32 (0.0000 s)
-[Branch-and-Bound] valor=39 (OTIMO provado) nos=107337 tempo=0.0058 s
-[DP largura] largura=12 valor=39 (OTIMO) tempo=0.0008 s (ordem: 0.0006 s) memoria~0 MB
+[Branch-and-Bound] valor=39 (OTIMO provado) nos=107337 tempo=0.0069 s
+[DP largura] largura=12 valor=39 (OTIMO) tempo=0.0005 s (ordem: 0.0005 s) memoria~0 MB
 
 Valor otimo: 39 (provado por Branch-and-Bound e DP largura)
 Heuristica T1 / otimo: 0.8205

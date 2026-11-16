@@ -2,8 +2,8 @@ Instancia: instancias_t2/ALE_n120_s3
 n=120 m=240 peso_total=240
 
 [Heuristica T1] guloso+busca local: 195 (0.0000 s)
-[Branch-and-Bound] valor=198 (limite de tempo: otimalidade NAO provada) nos=883617792 tempo=30.0002 s
-[DP largura] largura=25 valor=202 (OTIMO) tempo=7.8471 s (ordem: 0.0017 s) memoria~450 MB
+[Branch-and-Bound] valor=198 (limite de tempo: otimalidade NAO provada) nos=869392384 tempo=30.0001 s
+[DP largura] largura=25 valor=202 (OTIMO) tempo=5.5688 s (ordem: 0.0013 s) memoria~450 MB
 
 Valor otimo: 202 (provado por DP largura)
 Heuristica T1 / otimo: 0.9653

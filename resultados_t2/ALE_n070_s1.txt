@@ -2,7 +2,7 @@ Instancia: instancias_t2/ALE_n070_s1
 n=70 m=140 peso_total=140
 
 [Heuristica T1] guloso+busca local: 110 (0.0000 s)
-[Branch-and-Bound] valor=117 (OTIMO provado) nos=2863962 tempo=0.1279 s
+[Branch-and-Bound] valor=117 (OTIMO provado) nos=2863962 tempo=0.1149 s
 [DP largura] largura=15 valor=117 (OTIMO) tempo=0.0025 s (ordem: 0.0004 s) memoria~0 MB
 
 Valor otimo: 117 (provado por Branch-and-Bound e DP largura)

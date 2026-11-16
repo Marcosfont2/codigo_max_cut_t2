@@ -2,8 +2,8 @@ Instancia: instancias_t2/TORO_10x200
 n=2000 m=4000 peso_total=2
 
 [Heuristica T1] guloso+busca local: 1080 (0.0002 s)
-[Branch-and-Bound] valor=1080 (limite de tempo: otimalidade NAO provada) nos=913272832 tempo=30.0003 s
-[DP largura] largura=21 valor=1386 (OTIMO) tempo=13.9592 s (ordem: 0.0018 s) memoria~265 MB
+[Branch-and-Bound] valor=1080 (limite de tempo: otimalidade NAO provada) nos=1038647296 tempo=30.0003 s
+[DP largura] largura=21 valor=1386 (OTIMO) tempo=12.6139 s (ordem: 0.0015 s) memoria~265 MB
 
 Valor otimo: 1386 (provado por DP largura)
 Heuristica T1 / otimo: 0.7792

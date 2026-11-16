@@ -3,7 +3,7 @@ n=20 m=40 peso_total=2
 
 [Heuristica T1] guloso+busca local: 13 (0.0000 s)
 [Branch-and-Bound] valor=14 (OTIMO provado) nos=187 tempo=0.0000 s
-[DP largura] largura=7 valor=14 (OTIMO) tempo=0.0000 s (ordem: 0.0002 s) memoria~0 MB
+[DP largura] largura=7 valor=14 (OTIMO) tempo=0.0000 s (ordem: 0.0001 s) memoria~0 MB
 
 Valor otimo: 14 (provado por Branch-and-Bound e DP largura)
 Heuristica T1 / otimo: 0.9286

@@ -5,7 +5,7 @@ from collections import defaultdict
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-rows = list(csv.DictReader(open("resultados_t2/resultados.csv")))
+rows = list(csv.DictReader(open("resultados_longos/resultados.csv")))
 AZUL, CINZA = "#1f5fa8", "#555555"
 fig, axs = plt.subplots(1, 2, figsize=(7.4, 2.9), sharey=True)
 for ax, fam, tit in zip(axs, ("ALE", "PM1"), ("pesos $+1$", "pesos $\\pm1$")):

@@ -22,6 +22,7 @@ int main(int argc, char **argv) {
     double tempoMax = 60;
     int larguraMax = 26;
     double memMax = 2000;
+    double progresso = 0;
     bool soLargura = false;
     vector<string> pos;
     for (int i = 1; i < argc; i++) {
@@ -32,6 +33,7 @@ int main(int argc, char **argv) {
         else if (a == "--largura-max") larguraMax = atoi(prox().c_str());
         else if (a == "--memoria-max") memMax = atof(prox().c_str());
         else if (a == "--csv") csv = prox();
+        else if (a == "--progresso") progresso = atof(prox().c_str());
         else if (a == "--so-largura") soLargura = true;
         else pos.push_back(a);
     }
@@ -44,7 +46,7 @@ int main(int argc, char **argv) {
 
     if (instancia.empty()) {  // menu: escolhe o caso de teste dentre os arquivos de instancias_t2/
         vector<string> arquivos;
-        for (const char *pasta : {"instancias_t2", "instancias_t1"})  // casos novos (T2) e instancias do Trabalho 1
+        for (const char *pasta : {"instancias_longas", "instancias_t2", "instancias_t1"})  // casos novos (T2) e instancias do Trabalho 1
             if (fs::exists(pasta))
                 for (auto &e : fs::directory_iterator(pasta))
                     if (e.is_regular_file()) arquivos.push_back(e.path().string());
@@ -84,7 +86,7 @@ int main(int argc, char **argv) {
     r << fixed << setprecision(4);
     r << "Instancia: " << instancia << "\nn=" << g.n << " m=" << g.m << " peso_total=" << g.pesoTotal << "\n\n";
 
-    // heuristica do Trabalho 1
+    // ---- heuristica do Trabalho 1 ----
     auto t0 = Clock::now();
     vector<int> ladoH = heuristicaT1(g);
     double tempoH = segundos(t0, Clock::now());
@@ -96,7 +98,7 @@ int main(int argc, char **argv) {
     bool provado = false;
     string quemProvou;
 
-    // Algoritmo 1: Branch-and-Bound 
+    // ---- Algoritmo 1: Branch-and-Bound ----
     ResultadoBB bb;
     bool rodouBB = false;
     if (algoritmo == "bb" || algoritmo == "ambos") {
@@ -104,15 +106,28 @@ int main(int argc, char **argv) {
             r << "[Branch-and-Bound] nao executado (n > 5000)\n";
         } else {
             rodouBB = true;
-            bb = branchAndBound(g, ladoH, tempoMax);
+            bb = branchAndBound(g, ladoH, tempoMax, progresso);
             r << "[Branch-and-Bound] valor=" << bb.valor << (bb.otimo ? " (OTIMO provado)" : " (limite de tempo: otimalidade NAO provada)")
               << " nos=" << bb.nos << " tempo=" << bb.tempo << " s\n";
+            r << "    limitante superior na raiz: " << bb.ubRaiz << "; nos/s: " << (long long)(bb.nos / max(bb.tempo, 1e-9)) << "\n";
+            r << "    evolucao do melhor valor (tempo s: valor):";
+            for (size_t i = 0; i < bb.trajetoria.size(); i++) {
+                if (bb.trajetoria.size() > 12 && i == 6) r << " ...";
+                if (bb.trajetoria.size() > 12 && i >= 6 && i + 6 < bb.trajetoria.size()) continue;
+                r << " " << setprecision(2) << bb.trajetoria[i].first << ": " << bb.trajetoria[i].second;
+            }
+            r << setprecision(4) << "\n";
+            if (!bb.amostrasNos.empty()) {
+                r << "    nos visitados ao longo do tempo (s: nos):";
+                for (auto &[t, n] : bb.amostrasNos) r << " " << (long long)t << ": " << n;
+                r << "\n";
+            }
             if (bb.valor > melhor) melhor = bb.valor, ladoMelhor = bb.lado;
             if (bb.otimo) provado = true, quemProvou = "Branch-and-Bound";
         }
     }
 
-    // Algoritmo 2: DP sobre a largura de caminho 
+    // ---- Algoritmo 2: DP sobre a largura de caminho ----
     ResultadoDP dp;
     bool rodouDP = false;
     if (algoritmo == "dp" || algoritmo == "ambos") {
@@ -134,7 +149,7 @@ int main(int argc, char **argv) {
         }
     }
 
-    // conferencia 
+    // ---- conferencia ----
     ll conferido = valorCorte(g, ladoMelhor);
     r << "\n";
     if (provado) {
@@ -167,13 +182,16 @@ int main(int argc, char **argv) {
     if (!csv.empty()) {  // linha para a tabela de experimentos
         bool novo = !fs::exists(csv);
         ofstream f(csv, ios::app);
-        if (novo) f << "instancia,n,m,peso_total,heur,t_heur,bb_valor,bb_otimo,bb_nos,bb_tempo,dp_largura,dp_ok,dp_valor,dp_tempo,dp_mem_mb,otimo\n";
+        if (novo) f << "instancia,n,m,peso_total,heur,t_heur,bb_valor,bb_otimo,bb_nos,bb_tempo,dp_largura,dp_ok,dp_valor,dp_tempo,dp_mem_mb,otimo,ub_raiz,bb_melhoras\n";
         f << nome << ',' << g.n << ',' << g.m << ',' << g.pesoTotal << ',' << valH << ',' << tempoH << ',';
         if (rodouBB) f << bb.valor << ',' << bb.otimo << ',' << bb.nos << ',' << bb.tempo << ',';
         else f << ",,,,";
         if (rodouDP) f << dp.largura << ',' << dp.ok << ',' << (dp.ok ? dp.valor : 0) << ',' << dp.tempo << ',' << (long long)dp.memMB << ',';
         else f << ",,,,,";
-        f << (provado ? to_string(melhor) : "") << '\n';
+        f << (provado ? to_string(melhor) : "") << ',';
+        if (rodouBB) f << bb.ubRaiz << ',' << bb.trajetoria.size() - 1;
+        else f << ',';
+        f << '\n';
     }
     return 0;
 }

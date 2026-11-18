@@ -1,4 +1,3 @@
-// Algoritmo exato 1: Branch-and-Bound com limitante superior incremental (ver Secao 5.1 do relatorio).
 #pragma once
 #include "grafo.hpp"
 
@@ -8,6 +7,9 @@ struct ResultadoBB {
     bool otimo = false;  // true se a busca terminou (otimalidade provada)
     ll nos = 0;
     double tempo = 0;
+    ll ubRaiz = 0;                              // limitante superior no no raiz (antes de qualquer decisao)
+    vector<pair<double, ll>> trajetoria;        // (tempo, melhor valor) a cada melhoria da solucao incumbente
+    vector<pair<double, ll>> amostrasNos;       // (tempo, nos visitados) a cada intervalo de progresso
 };
 
 // Ordem de decisao dos vertices: o proximo e o que tem maior peso (|w|) para vertices ja ordenados,
@@ -41,7 +43,7 @@ struct BranchAndBound {
     int n;
     vector<int> ordem;
     vector<char> novaComp;
-    vector<int> lado;           // -1 = nao decidido, 0 ou 1
+    vector<int> lado;           
     vector<array<ll, 2>> c;     // c[v][s] = peso das arestas de v para vizinhos ja decididos no lado s
     ll corte = 0;               // valor das arestas ja decididas (ambas as pontas decididas) que estao cortadas
     ll somaMax = 0;             // soma, sobre v nao decidido, de max(c[v][0], c[v][1])
@@ -51,6 +53,8 @@ struct BranchAndBound {
     ll nos = 0;
     bool estourou = false;
     double limite;
+    double progresso = 0, ultimoProg = 0;  // intervalo (s) entre mensagens de progresso; 0 = sem mensagens
+    vector<pair<double, ll>> trajetoria, amostrasNos;
     Clock::time_point t0;
 
     BranchAndBound(const Grafo &grafo, double limiteTempo) : g(grafo), n(grafo.n), limite(limiteTempo) {
@@ -90,15 +94,24 @@ struct BranchAndBound {
 
     void rec(int i) {
         if (estourou) return;
-        if ((++nos & 4095) == 0 && segundos(t0, Clock::now()) > limite) {
-            estourou = true;
-            return;
+        if ((++nos & 4095) == 0) {
+            double t = segundos(t0, Clock::now());
+            if (t > limite) {
+                estourou = true;
+                return;
+            }
+            if (progresso > 0 && t - ultimoProg >= progresso) {
+                ultimoProg = t;
+                amostrasNos.push_back({t, nos});
+                cerr << "  [B&B] t=" << (long long)t << " s  nos=" << nos << "  melhor=" << melhor << endl;
+            }
         }
         // Limitante superior: nenhum completamento da solucao parcial passa deste valor.
         if (corte + somaMax + ubNN <= melhor) return;
         if (i == n) {  // aqui somaMax = ubNN = 0, logo corte > melhor
             melhor = corte;
             melhorLado = lado;
+            trajetoria.push_back({segundos(t0, Clock::now()), melhor});
             return;
         }
         int v = ordem[i];
@@ -114,17 +127,23 @@ struct BranchAndBound {
     }
 };
 
-ResultadoBB branchAndBound(const Grafo &g, const vector<int> &ladoInicial, double limiteTempo) {
+ResultadoBB branchAndBound(const Grafo &g, const vector<int> &ladoInicial, double limiteTempo, double progresso = 0) {
     BranchAndBound bb(g, limiteTempo);
     bb.t0 = Clock::now();
+    bb.progresso = progresso;
     bb.melhorLado = ladoInicial;
     bb.melhor = valorCorte(g, ladoInicial);
+    bb.trajetoria.push_back({0.0, bb.melhor});
+    ll ubRaiz = bb.corte + bb.somaMax + bb.ubNN;
     bb.rec(0);
     ResultadoBB r;
     r.valor = bb.melhor;
     r.lado = bb.melhorLado;
     r.otimo = !bb.estourou;
     r.nos = bb.nos;
+    r.ubRaiz = ubRaiz;
+    r.trajetoria = bb.trajetoria;
+    r.amostrasNos = bb.amostrasNos;
     r.tempo = segundos(bb.t0, Clock::now());
     return r;
 }

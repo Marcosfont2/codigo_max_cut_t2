@@ -1,5 +1,3 @@
-// Algoritmo exato 2: programacao dinamica sobre a fronteira de uma ordem dos vertices
-// (largura de caminho; ver Secao 5.2 do relatorio).
 #pragma once
 #include "grafo.hpp"
 

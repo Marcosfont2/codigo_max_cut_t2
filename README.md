@@ -1,48 +1,40 @@
-# Corte Máximo — algoritmos exatos (Trabalho 2, DIM0605)
+# Max-Cut: algoritmos exatos (Trabalho 2)
 
-Dois algoritmos exatos para o Max-Cut, comparados com a heurística gulosa + busca local do Trabalho 1:
+Branch-and-Bound e programação dinâmica sobre a largura de caminho, mais a heurística do Trabalho 1 para comparação.
+Só precisa de `g++` (C++17).
 
-1. **Branch-and-Bound** com limitante superior incremental, inicializado com a heurística do Trabalho 1.
-2. **Programação dinâmica sobre a fronteira** de uma ordem dos vértices (largura de caminho).
+## Rodar as 12 instâncias
 
-Não é preciso instalar nada além de um compilador C++17 (`g++`). O relatório em PDF está em `relatorio/relatorio.pdf`.
+```
+bash scripts/rodar_experimentos_longos.sh 900
+```
 
-## Arquivos
+- Compila sozinho e roda cada instância de `instancias_longas/` com limite de 900 s (15 min) por algoritmo.
+- Teste rápido: `bash scripts/rodar_experimentos_longos.sh 20` (depois apague `resultados_longos/`).
+- Resultados em `resultados_longos/`: `resultados.csv` e um `.txt` por instância (relatório e partição).
 
-- `exato.cpp`: programa principal (os dois algoritmos, a heurística do Trabalho 1 e a interface).
-- `gerador_t2.cpp`: gerador de instâncias (aleatórias e grades toroidais). `gerador.cpp` e `maxcut.cpp` são os do Trabalho 1.
-- `validacao.cpp`: confere os algoritmos contra força bruta em grafos pequenos aleatórios.
-- `instancias_t2/`: 79 instâncias do Trabalho 2. `instancias_t1/`: instâncias do Trabalho 1 (G-set e R100k).
-- `resultados_t2/`: relatório de cada execução (valor, partição) e `resultados.csv`.
-- `scripts/`: gerar instâncias, rodar todos os experimentos, gerar tabelas e figura do relatório.
-- `relatorio/`: fontes LaTeX e PDF.
+## Tabelas e figuras
 
-Formato das instâncias (igual ao Trabalho 1): primeira linha `n m`, depois `m` linhas `u v peso`, vértices de 1 a n.
+```
+python3 scripts/gerar_tabelas_figuras.py
+```
 
-## Compilar
+Lê `resultados_longos/resultados.csv` e grava em `resultados_longos/`: `tabela.md` (também impressa no terminal), `tabela.tex`, `fig_razao.pdf/png` e `fig_tempos.pdf/png`. As tabelas só usam Python 3; as figuras precisam de matplotlib (`pip install matplotlib`).
+
+## Rodar uma instância
 
 ```
 g++ -std=c++17 -O2 -o exato exato.cpp
-g++ -std=c++17 -O2 -o gerador_t2 gerador_t2.cpp
-g++ -std=c++17 -O2 -o validacao validacao.cpp
+./exato instancias_longas/04_TORO_8x250
+./exato instancias_longas/08_ALE_n200 --algoritmo bb --tempo 900
+./exato                       # menu para escolher a instância
 ```
 
-## Rodar
+Opções: `--algoritmo bb|dp|ambos`, `--tempo S`, `--largura-max W` (padrão 26; use 24 se faltar memória), `--csv arquivo`.
 
-```
-./exato                                  # menu: escolhe a instância dentre instancias_t2/ e instancias_t1/
-./exato instancias_t2/TORO_8x250         # uma instância; relatório em tela e em resultados_t2/TORO_8x250.txt
-./exato <instancia> [saida] [opções]
-```
+## Arquivos
 
-Opções:
-- `--algoritmo bb|dp|ambos` (padrão `ambos`)
-- `--tempo S` limite de tempo por algoritmo, em segundos (padrão 60)
-- `--largura-max W` largura máxima aceita pela DP (padrão 26; a tabela tem 2^W entradas)
-- `--memoria-max MB` (padrão 2000). Em máquinas com pouca memória, use `--largura-max 22`.
-- `--csv arquivo` acrescenta uma linha de resultados ao CSV
-- `--so-largura` só estima a largura da ordem (diz se a DP é viável)
-
-A saída mostra o valor de cada algoritmo, se a otimalidade foi provada, o valor ótimo, a razão heurística/ótimo, a conferência do valor recalculado a partir da partição, e a partição (um caractere 0/1 por vértice, 1..n). O arquivo de saída traz a partição no formato `vértice lado`.
-
-Os tempos do relatório foram medidos em uma máquina equipada com processador Intel Core i5-9300H @ 2,40 GHz e 8 GB de RAM (em execução single-thread)
+- `exato.cpp`: interface. Módulos: `grafo.hpp`, `heuristica_t1.hpp`, `branch_and_bound.hpp`, `dp_largura.hpp`.
+- `scripts/gerar_tabelas_figuras.py`: tabelas e figuras a partir do CSV.
+- `gerador_t2.cpp` e `scripts/gerar_instancias_longas.sh`: recriam as instâncias (determinístico).
+- `validacao.cpp`: compara os algoritmos com força bruta (`g++ -std=c++17 -O2 -o validacao validacao.cpp && ./validacao 3000 7`).

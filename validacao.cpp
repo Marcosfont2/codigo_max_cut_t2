@@ -1,8 +1,8 @@
-// Validacao dos algoritmos exatos contra forca bruta em milhares de grafos pequenos aleatorios.
-// (A forca bruta so e usada aqui, como oraculo de teste; nao faz parte da entrega algoritmica.)
 
-#define SEM_MAIN
-#include "exato.cpp"
+#include "branch_and_bound.hpp"
+#include "dp_largura.hpp"
+#include "grafo.hpp"
+#include "heuristica_t1.hpp"
 
 static ll forcaBruta(const Grafo &g) {
     int n = g.n;

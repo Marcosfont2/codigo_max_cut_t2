@@ -204,7 +204,7 @@ ResultadoDP dpLargura(const Grafo &g, const vector<int> &ordem, int larguraMax, 
     }
     r.valor = f[0];
 
-    // --- reconstrucao da particao otima ---
+    // reconstrucao da particao otima 
     r.lado.assign(n, 0);
     uint64_t mask = 0;
     for (int t = n - 1; t >= 0; t--) {

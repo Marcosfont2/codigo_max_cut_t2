@@ -1,7 +1,6 @@
 # Max-Cut: algoritmos exatos (Trabalho 2)
 
-Branch-and-Bound e programação dinâmica sobre a largura de caminho, mais a heurística do Trabalho 1 para comparação.
-Só precisa de `g++` (C++17).
+Implementação do algoritmos exatos Branch-and-Bound e programação dinâmica sobre a largura de caminho e a heurística do Trabalho 1 para comparação.
 
 ## Rodar as 12 instâncias
 
@@ -10,6 +9,7 @@ bash scripts/rodar_experimentos_longos.sh 900
 ```
 
 - Compila sozinho e roda cada instância de `instancias_longas/` com limite de 900 s (15 min) por algoritmo.
+- Duração: cerca de 2h15 no pior caso. Retomável: se interromper, rode o mesmo comando.
 - Teste rápido: `bash scripts/rodar_experimentos_longos.sh 20` (depois apague `resultados_longos/`).
 - Resultados em `resultados_longos/`: `resultados.csv` e um `.txt` por instância (relatório e partição).
 
@@ -20,6 +20,10 @@ python3 scripts/gerar_tabelas_figuras.py
 ```
 
 Lê `resultados_longos/resultados.csv` e grava em `resultados_longos/`: `tabela.md` (também impressa no terminal), `tabela.tex`, `fig_razao.pdf/png` e `fig_tempos.pdf/png`. As tabelas só usam Python 3; as figuras precisam de matplotlib (`pip install matplotlib`).
+
+## Relatório
+
+Fontes LaTeX e PDF em `relatorio/` (`relatorio.tex` é o arquivo principal; compile duas vezes: `pdflatex relatorio.tex` duas vezes seguidas, senão aparecem "??" nas referências). `relatorio/resultados.csv` são os resultados usados no texto (execução com 900 s por algoritmo).
 
 ## Rodar uma instância
 

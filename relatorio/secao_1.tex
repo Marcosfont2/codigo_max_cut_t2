@@ -1,0 +1,10 @@
+\section{Introdução}
+
+O problema do Corte Máximo (\emph{Max-Cut}) pede para dividir os vértices de um grafo em dois grupos de modo que o peso das arestas que ligam um grupo ao outro seja o maior possível. No Trabalho~1 usamos uma heurística simples (gulosa, com busca local) que resolve grafos de 100 mil vértices em milissegundos, mas que não garante o melhor resultado: nos grafos toroidais com pesos $\pm1$ do G-set ela ficou em torno de 80\% do melhor valor conhecido. Esse valor de referência vem de metaheurísticas \cite{Benlic and Hao 2013}, e não de uma prova de otimalidade, então não sabíamos o quanto da diferença era culpa da heurística.
+
+Neste trabalho fazemos o contrário: usamos algoritmos \emph{exatos}, que devolvem o ótimo e provam que ele é o ótimo, ao custo de tempo exponencial no pior caso. Implementamos dois, de técnicas diferentes: um \emph{Branch-and-Bound} (explora as possibilidades e descarta as que não podem ser as melhores) e uma \emph{programação dinâmica} (varre o grafo mantendo na memória só o que ainda importa). Os dois foram conferidos contra força bruta em 3\,000 grafos pequenos.
+
+Em vez de muitas instâncias pequenas, testamos 12 instâncias de tamanho significativo (de 100 a 100\,002 vértices), com até 15 minutos por algoritmo em cada uma. Em algumas, o ótimo é calculado e comparado com a heurística; em outras, o Branch-and-Bound trabalha até o limite de tempo e devolve a melhor solução que achou. Um aviso: um algoritmo exato escrito do zero não resolve as instâncias do G-set do Trabalho~1, e a literatura que resolve esses tamanhos usa ferramentas bem mais sofisticadas \cite{Liers et al. 2004, Rendl et al. 2010}. Por isso as instâncias misturam grafos aleatórios pequenos, grades toroidais estreitas (que chegam a 100 mil vértices por terem estrutura favorável) e instâncias difíceis, incluindo duas do G-set.
+
+O texto segue a ordem pedida: problema e complexidade (Seção~2), estado da arte (Seção~3), técnicas escolhidas (Seção~4), algoritmos com prova de correção e análise de custo (Seção~5), instâncias e metodologia (Seção~6), resultados (Seção~7) e conclusão (Seção~8).
+

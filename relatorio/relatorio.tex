@@ -1,0 +1,28 @@
+\input{preambulo}
+\begin{document}
+\begin{center}
+{\Large\bfseries Corte Máximo: Algoritmos Exatos por Branch-and-Bound\\ e Programação Dinâmica sobre a Largura de Caminho}\\[10pt]
+{\bfseries Eduardo Marinho$^1$, Marcos Fontes$^1$}\\[6pt]
+$^1$Centro de Ciências Exatas e da Terra\\
+Departamento de Informática e Matemática Aplicada (DIMAp)\\
+Universidade Federal do Rio Grande do Norte (UFRN) -- Natal, RN -- Brasil\\
+DIM0605 -- Projeto e Análise de Algoritmos -- Prof.\ Sílvia Maia\\
+Novembro de 2026
+\end{center}
+\vspace{6pt}
+\begin{resumobloco}{Abstract}
+This paper presents two exact algorithms for the Maximum Cut problem: a Branch-and-Bound, started from the heuristic of our previous work, and a dynamic program that sweeps the graph keeping only a small ``frontier'' of active vertices. Both are proved correct and were checked against brute force on 3,000 small graphs. On 12 instances with 100 to 100,002 vertices and a 15-minute limit per algorithm, the dynamic program found the optimum of 7 instances, including two toroidal grids of about 100,000 vertices (0.6 s and 9.2 s). Branch-and-Bound proved optimality for a single 100-vertex instance, because its upper bound is loose. With the optima, the previous heuristic reaches 77--79\% of the optimum on toroidal grids and 83--96\% on small sparse random graphs.
+\end{resumobloco}
+\vspace{8pt}
+\begin{resumobloco}{Resumo}
+Este trabalho apresenta dois algoritmos exatos para o problema do Corte Máximo: um Branch-and-Bound, iniciado com a heurística do trabalho anterior, e uma programação dinâmica que varre o grafo guardando apenas uma pequena ``fronteira'' de vértices ativos. Ambos têm prova de correção e foram conferidos contra força bruta em 3\,000 grafos pequenos. Em 12 instâncias de 100 a 100\,002 vértices, com limite de 15 minutos por algoritmo, a programação dinâmica calculou o ótimo de 7, inclusive duas grades toroidais de cerca de 100 mil vértices (0,6\,s e 9,2\,s). O Branch-and-Bound provou a otimalidade de uma única instância de 100 vértices, porque seu limite superior é folgado. Com os ótimos, a heurística do trabalho anterior obtém de 77\% a 79\% do ótimo nas grades toroidais e de 83\% a 96\% em grafos aleatórios esparsos pequenos.
+\end{resumobloco}
+\vspace{4pt}
+\input{secao_1}
+\input{secao_2_3}
+\input{secao_5}
+\input{secao_6}
+\input{secao_7_8}
+\renewcommand{\refname}{Referências}
+\input{referencias}
+\end{document}

@@ -1,0 +1,102 @@
+\section{Algoritmos Implementados}
+
+\subsection{Algoritmo 1: Branch-and-Bound}
+
+\paragraph{Como funciona.} Os vértices são decididos um a um, em uma ordem escolhida de forma gulosa: o próximo é sempre o que tem mais peso ligado aos vértices já decididos. Assim as arestas ficam ``resolvidas'' cedo, e o teto fica justo mais rápido. Para cada vértice, tentamos primeiro o lado que corta mais peso.
+
+\paragraph{O teto.} Em um ponto da busca, parte dos vértices já tem lado. O teto soma três coisas: (i) o valor das arestas já resolvidas que estão cortadas; (ii) para cada vértice ainda livre, o máximo entre os dois lados do que ele ganharia com as arestas para vértices já decididos (é o $\max\{c_0(v),c_1(v)\}$ abaixo, em que $c_s(v)$ é o peso das arestas de $v$ para decididos do lado $s$); e (iii) para cada aresta entre dois vértices livres, o seu peso se for positivo (na melhor das hipóteses ela é cortada). Em fórmula,
+\begin{equation}\label{eq:ub}
+  \mathrm{teto}=\mathrm{corte\ atual}+\sum_{v\ \text{livre}}\max\{c_0(v),c_1(v)\}+\sum_{\substack{uv\in E\\ u,v\ \text{livres}}}\max\{w_{uv},0\}.
+\end{equation}
+Esse valor é atualizado de forma incremental, mexendo só no vértice decidido e em seus vizinhos. Um detalhe: como trocar os dois lados de todos os vértices de uma componente conexa não altera o corte, o primeiro vértice de cada componente é fixado no lado 0, o que corta a busca pela metade por componente.
+
+\begin{algorithm}[ht]
+\caption{Branch-and-Bound}\label{alg:bb}
+\begin{algorithmic}[1]
+\Require grafo $G=(V,E,w)$, tempo máximo $T$
+\Ensure a melhor partição encontrada (é ótima se a busca terminar antes de $T$)
+\State $s^*\gets$ heurística do Trabalho 1; \quad $\mathit{melhor}\gets$ valor de $s^*$
+\State definir a ordem dos vértices e calcular o teto inicial
+\Procedure{Busca}{$i$}
+  \If{$\mathrm{teto}\le\mathit{melhor}$} \State \textbf{retornar} \Comment{poda: este ramo não pode vencer}
+  \EndIf
+  \If{todos os vértices decididos} \State $\mathit{melhor}\gets$ corte atual; \quad $s^*\gets$ partição atual; \quad \textbf{retornar}
+  \EndIf
+  \State $v\gets$ $i$-ésimo vértice da ordem
+  \For{cada lado $s\in\{0,1\}$ (primeiro o que corta mais; pular $s=1$ se $v$ abre componente)}
+    \State decidir $v$ no lado $s$; \quad \Call{Busca}{$i+1$}; \quad desfazer a decisão
+  \EndFor
+\EndProcedure
+\State \Call{Busca}{$1$}; \quad \textbf{devolva} $s^*$
+\end{algorithmic}
+\end{algorithm}
+
+\paragraph{Por que está correto.} O ponto-chave é que o teto nunca subestima.
+
+\begin{lema}\label{lema:ub}
+Qualquer forma de completar uma solução parcial tem corte menor ou igual ao teto \eqref{eq:ub}.
+\end{lema}
+\begin{prova}
+As arestas já resolvidas contribuem exatamente o ``corte atual''. Cada vértice livre só consegue cortar as arestas para decididos do lado oposto ao seu, o que vale no máximo $\max\{c_0(v),c_1(v)\}$. Cada aresta entre dois livres contribui $w_{uv}$ ou $0$, no máximo $\max\{w_{uv},0\}$. Somando, o teto cobre todos os casos. \qed
+\end{prova}
+
+\begin{teorema}[Correção]\label{teo:bb}
+Se a busca termina antes do limite de tempo, a partição devolvida é ótima.
+\end{teorema}
+\begin{prova}
+O valor $\mathit{melhor}$ sempre corresponde a uma partição válida. Suponha que existisse uma partição melhor que a devolvida; podemos supor que ela respeita a regra de fixar o primeiro vértice de cada componente no lado 0, pois trocar os lados de uma componente inteira não muda o corte. Em todo ponto do caminho que leva a essa partição, o teto é pelo menos o valor dela (Lema~\ref{lema:ub}), que é maior que $\mathit{melhor}$; logo nenhum ramo desse caminho é podado, a busca chega à partição e atualiza $\mathit{melhor}$, uma contradição. \qed
+\end{prova}
+
+\paragraph{Custo.} Cada decisão custa $O(\text{grau do vértice})$, e a árvore tem no máximo $2^{n}$ folhas, então o pior caso é $O(2^{n}\,\Delta)$ em tempo e $O(n+m)$ em memória. Não há garantia melhor: se o teto for folgado, quase nada é podado. É exatamente o que acontece nos grafos esparsos (Seção~7).
+
+\subsection{Algoritmo 2: Programação dinâmica sobre a fronteira}
+
+\paragraph{Como funciona.} Fixamos uma ordem $v_1,\dots,v_n$ e processamos os vértices um a um. A \emph{fronteira} $F$ é o conjunto dos vértices já processados que ainda têm vizinhos por processar. Guardamos uma tabela $f$ que, para cada combinação de lados dos vértices de $F$, dá o maior valor de corte, contando só as arestas entre vértices já processados. Cada passo tem duas fases (Figura~\ref{fig:passo}): o vértice novo entra, e os vértices que não têm mais vizinhos pendentes saem.
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[caixa/.style={draw=blue!70!black,fill=blue!6,rounded corners=2pt,align=center,font=\footnotesize,text width=3.5cm,minimum height=1.25cm},
+  seta/.style={-{Stealth[length=2mm]},thick,draw=black!60}]
+  \node[caixa] (a) {\textbf{1. Entra o vértice $v$}\\a tabela dobra\\(lado 0 ou lado 1)};
+  \node[caixa,right=0.7cm of a] (b) {\textbf{2. Saem os vértices}\\sem vizinhos pendentes\\a tabela encolhe\\(fica o melhor lado)};
+  \node[caixa,right=0.7cm of b] (c) {\textbf{3. Próximo vértice}\\ou fim: a tabela vazia\\guarda o valor ótimo};
+  \draw[seta] (a)--(b); \draw[seta] (b)--(c);
+  \draw[seta] (c.south) -- ++(0,-0.45) -| (a.south);
+\end{tikzpicture}
+\caption{Um passo da programação dinâmica.}\label{fig:passo}
+\end{figure}
+
+\begin{algorithm}[ht]
+\caption{Programação dinâmica sobre a fronteira}\label{alg:dp}
+\begin{algorithmic}[1]
+\Require grafo $G=(V,E,w)$ e uma ordem $v_1,\dots,v_n$ dos vértices
+\Ensure o valor ótimo e uma partição ótima
+\State $F\gets$ lista vazia; \quad $f\gets$ tabela com uma única entrada, de valor $0$
+\For{$t=1$ \textbf{até} $n$}
+  \State $v\gets v_t$
+  \ForAll{combinação $x$ de lados de $F$ \textbf{e} lado $s\in\{0,1\}$ para $v$} \Comment{se $F$ é vazia, só $s=0$}
+    \State $h[x,s]\gets f[x]+{}$soma dos pesos das arestas de $v$ para vértices de $F$ que estão no lado oposto a $s$
+  \EndFor
+  \State $F\gets F\cup\{v\}$; \quad $f\gets h$ \Comment{agora a tabela cobre $F$ inclusive $v$}
+  \ForAll{$u\in F$ sem vizinhos ainda não processados}
+    \State trocar $f$ por $f'[y]=\max\{f[y,u{=}0],\,f[y,u{=}1]\}$, \textbf{guardando} qual lado de $u$ venceu
+    \State remover $u$ de $F$
+  \EndFor
+\EndFor
+\State \textbf{devolva} $f[\,]$ \Comment{$F$ ficou vazia: a única entrada é o valor ótimo}
+\State recuperar a partição percorrendo os passos de trás para frente, lendo o lado que venceu em cada remoção
+\end{algorithmic}
+\end{algorithm}
+
+\paragraph{Por que está correto.} A ideia é que a tabela sempre responde exatamente à pergunta: ``qual o melhor corte entre os vértices já processados, dado que a fronteira está nesta configuração?''
+
+\begin{teorema}[Correção]\label{teo:dp}
+Para qualquer ordem dos vértices, o Algoritmo~\ref{alg:dp} devolve o valor ótimo e uma partição que o atinge.
+\end{teorema}
+\begin{prova}
+Por indução no número de vértices processados. No passo em que $v$ entra, os vizinhos de $v$ já processados estão todos na fronteira (cada um tem $v$ como vizinho pendente); logo as arestas novas só dependem dos lados da fronteira e do lado de $v$, e a soma da linha~5 as conta exatamente. Um vértice $u$ só sai quando todos os seus vizinhos já foram processados; assim, nenhuma aresta futura depende do lado de $u$, e escolher o melhor lado dele não descarta nenhuma solução. Ao final, a fronteira está vazia e a tabela guarda o máximo sobre todas as partições. A restrição $s=0$ para um vértice que abre uma componente não perde o ótimo, pelo mesmo argumento de simetria do Teorema~\ref{teo:bb}. A reconstrução desfaz as escolhas em ordem inversa, usando o lado que venceu em cada remoção. \qed
+\end{prova}
+
+\paragraph{Custo.} Seja $w$ o maior número de vértices que a tabela cobre em algum passo (a fronteira mais o vértice que entra). A tabela tem então até $2^{w}$ entradas. Cada vértice entra uma vez, e para cada entrada somamos as arestas para a fronteira; cada remoção percorre a tabela uma vez. O tempo total é $O(2^{w}(n+m))$. A memória é $O(2^{w})$ para a tabela, mais $O(n\,2^{w})$ \emph{bits} para guardar qual lado venceu em cada remoção (necessários para reconstruir a partição). Com a melhor ordem possível, $w-1$ é a largura de caminho do grafo \cite{Kinnersley 1992}; achar essa ordem é difícil, e usamos uma heurística.
+
+\paragraph{Escolha da ordem.} A ordem é gulosa: em cada passo, entre os vértices vizinhos da fronteira, escolhemos o que deixa a fronteira menor (desempate pelo menor número de vizinhos pendentes e, depois, ao acaso). Repetimos a construção a partir de até 30 vértices iniciais diferentes e ficamos com a de menor $w$. Antes de alocar qualquer tabela, o programa calcula $w$ e a memória necessária e se recusa a executar se $w>26$ ou se passar de 2\,GB. Nas grades toroidais de lado curto $L$, o guloso acha $w=2L+1$ (Tabela~\ref{tab:principal}).
